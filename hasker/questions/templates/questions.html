@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+    <div class="uk-navbar-left">
+        <ul class="uk-navbar-nav">
+            <li {% if view.ordering == '-posted' %} class="uk-active" {% endif %}><a href="{% url 'latest' %}">New questions</a></li>
+            <li {% if view.ordering == '-rating' %} class="uk-active" {% endif %}><a href="{% url 'popular' %}">Top questions</a></li>
+        </ul>
+    </div>
+</nav>
+
+{% if view.query %}
+<p class="uk-text-lead">Search results for: <span class="uk-text-primary">{{ query }}</span></p>
+<hr>
+{% elif view.kwargs.tag %}
+<p class="uk-text-lead">Questions with tag: <span class="uk-text-primary">{{ view.kwargs.tag }}</span></p>
+<hr>
+{% endif %}
+
+
+{% for question in object_list %}
+<article class="uk-article">
+    <p class="uk-article-title uk-text-large wrapword">
+        <a class="uk-link" href="{% url 'question_detail' question_id=question.pk %}">{{ question.title }}</a>
+    </p>
+    <p class="uk-article-meta">Asked by <a href="#">{{ question.author }}</a> on {{ question.posted }}</p>
+    <p class="wrapword">{{ question.content }}</p>
+
+    <div>
+        <div>
+            {% for tag in question.tags.all %}
+            <a class="uk-label uk-label-primary" href="{% url 'tag' tag=tag.name %}">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+        <div class="uk-margin-top">
+            <a class="uk-button uk-button-text" href="{% url 'question_detail' question_id=question.pk %}">{{ question.number_of_answers }} answers</a>
+            <a class="uk-button uk-button-text uk-margin-left" href="{% url 'question_detail' question_id=question.pk %}">{{ question.number_of_votes }} votes</a>
+        </div>
+    </div>
+</article>
+{% endfor %}
+
+{% include 'pagination.html' %}
+
+{% endblock content %}
