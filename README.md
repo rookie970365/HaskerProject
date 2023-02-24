@@ -44,5 +44,5 @@ Django приложение с API, реализующее Q&A сайт, ана�
 - Django REST framework 3.14
 
 ## Диаграмма БД
-<img src="https://github.com/rookie970365/HaskerProject/blob/main/db.png>
+<img src="https://github.com/rookie970365/HaskerProject/blob/main/db.png"/>
 
