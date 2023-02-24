@@ -16,7 +16,7 @@ class User(AbstractUser):
         blank=True,
         upload_to='avatars/%Y/%m/%d',
         validators=[size_validator],
-        default="default.jpg",
+        default="default.png",
     )
 
     def get_photo_url(self):
