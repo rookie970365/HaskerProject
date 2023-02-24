@@ -1,0 +1,46 @@
+version: '3'
+
+volumes:
+    pgdata:
+        driver: local
+
+services:
+    nginx:
+        restart: always
+        image: nginx:latest
+        expose:
+          - 8080
+        ports:
+          - "80:8080"
+        volumes:
+            - ./hasker/static:/srv/www/hasker/static
+            - ./hasker/media:/srv/www/hasker/media
+            - ./hasker/logs:/srv/www/hasker/logs
+            - ./docker/nginx:/etc/nginx/conf.d
+        depends_on:
+            - web
+
+    web:
+        restart: always
+        build:
+            context: .
+            dockerfile: docker/web/Dockerfile
+        volumes:
+            - ./hasker:/srv/www/hasker
+        expose:
+          - 8000
+        ports:
+            - "8000:8000"
+        command: "gunicorn -c gunicorn.py hasker.wsgi"
+
+    postgres:
+        image: postgres
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: postgres
+            POSTGRES_USER: hasker
+            POSTGRES_PASSWORD: passwd!
+            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - pgdata:/var/lib/postgresql/data
